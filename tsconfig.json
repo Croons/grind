@@ -2,12 +2,10 @@
   "compilerOptions": {
     "target": "ES2017",
     "module": "commonjs",
-    "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
     "sourceMap": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["app.ts"]
 }
