@@ -86,9 +86,39 @@ body {
   transform: translateY(-1px);
 }
 
-.scan-button svg {
+.scan-button .scan-icon {
   color: var(--accent);
   flex-shrink: 0;
+}
+
+.scan-button[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.scan-button[aria-disabled="true"] .scan-icon {
+  display: none;
+}
+
+.spinner {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  flex-shrink: 0;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner.visible {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .scan-status {
@@ -159,11 +189,55 @@ body {
   color: var(--text);
 }
 
+.calc-button {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 32px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #10151b;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px var(--accent-glow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.calc-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px var(--accent-glow);
+}
+
+.calc-button:disabled {
+  background: var(--bg-elevated);
+  color: var(--text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .result {
   background: var(--bg-elevated);
   border-radius: 18px;
   padding: 36px 28px 28px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(8px);
+  max-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.4s ease, padding 0.4s ease;
+}
+
+.result.visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 400px;
+  padding: 36px 28px 28px;
 }
 
 .gauge {
