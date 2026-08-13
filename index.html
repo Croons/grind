@@ -7,7 +7,332 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --bg: #14161a;
+  --bg-elevated: #1b1e24;
+  --text: #e8e6e1;
+  --text-dim: #8b8f99;
+  --line: #2a2d34;
+  --line-soft: #23262c;
+  --accent: #6b8cae;
+  --accent-soft: rgba(107, 140, 174, 0.16);
+  --accent-glow: rgba(107, 140, 174, 0.45);
+  --font-display: "Sora", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 15% 0%, #1a1d24 0%, var(--bg) 55%);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+
+.hero {
+  margin-bottom: 48px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  color: var(--accent);
+  margin: 0 0 18px;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.25;
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 46ch;
+}
+
+.scan-block {
+  margin-bottom: 44px;
+}
+
+.scan-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.scan-button:hover {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 22px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.scan-button .scan-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.scan-button[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.scan-button[aria-disabled="true"] .scan-icon {
+  display: none;
+}
+
+.spinner {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  flex-shrink: 0;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner.visible {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.scan-status {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 12px 2px 0;
+  max-width: 50ch;
+}
+
+.scan-status.visible {
+  color: var(--accent);
+}
+
+.form {
+  display: grid;
+  gap: 26px;
+  margin-bottom: 56px;
+}
+
+.field {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.field select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 4px 0 8px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.field::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.field:focus-within::after {
+  transform: scaleX(1);
+}
+
+.field select option {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.calc-button {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 32px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #10151b;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px var(--accent-glow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.calc-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px var(--accent-glow);
+}
+
+.calc-button:disabled {
+  background: var(--bg-elevated);
+  color: var(--text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.result {
+  background: var(--bg-elevated);
+  border-radius: 18px;
+  padding: 36px 28px 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(8px);
+  max-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.4s ease, padding 0.4s ease;
+}
+
+.result.visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 400px;
+  padding: 36px 28px 28px;
+}
+
+.gauge {
+  position: relative;
+  padding-top: 8px;
+  margin-bottom: 28px;
+}
+
+.gauge-line {
+  position: relative;
+  height: 1px;
+  background: var(--line);
+  margin: 0 6px;
+}
+
+.gauge-line::before,
+.gauge-line::after {
+  content: "";
+}
+
+.gauge-marker {
+  position: absolute;
+  top: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft), 0 0 18px var(--accent-glow);
+  transform: translateX(-6px);
+  transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  left: 50%;
+}
+
+.gauge-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+
+.gauge-ticks span {
+  flex: 1;
+  text-align: center;
+}
+
+.gauge-ticks span:first-child {
+  text-align: left;
+}
+
+.gauge-ticks span:last-child {
+  text-align: right;
+}
+
+.result-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 24px;
+  margin: 0 0 8px;
+  text-transform: capitalize;
+}
+
+.result-reason {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 44px 18px 72px;
+  }
+  .hero h1 {
+    font-size: 26px;
+  }
+  .gauge-ticks span {
+    font-size: 8px;
+  }
+}
+
+</style>
 </head>
 <body>
 <main class="page">
@@ -73,6 +398,260 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="dist/app.js" defer></script>
+<script>
+"use strict";
+const ORIGINS = [
+    { name: "Ethiopia", modifier: 1.0 },
+    { name: "Kenya", modifier: 1.2 },
+    { name: "Yemen", modifier: 1.0 },
+    { name: "Colombia", modifier: 0.6 },
+    { name: "Guatemala", modifier: 0.6 },
+    { name: "Costa Rica", modifier: 0.5 },
+    { name: "Panama", modifier: 0.7 },
+    { name: "Honduras", modifier: 0.3 },
+    { name: "El Salvador", modifier: 0.3 },
+    { name: "Rwanda", modifier: 0.5 },
+    { name: "Burundi", modifier: 0.5 },
+    { name: "Peru", modifier: 0.2 },
+    { name: "Bolivia", modifier: 0.4 },
+    { name: "Brazil", modifier: -0.5 },
+    { name: "Indonesia", modifier: -0.6 },
+    { name: "Papua New Guinea", modifier: -0.2 },
+    { name: "India", modifier: -0.4 },
+    { name: "Vietnam", modifier: -0.8 },
+];
+const VARIETIES = [
+    { name: "Bourbon", modifier: 0.5 },
+    { name: "Typica", modifier: 0.4 },
+    { name: "SL28", modifier: 0.6 },
+    { name: "SL34", modifier: 0.5 },
+    { name: "Caturra", modifier: 0.3 },
+    { name: "Catuai", modifier: 0.1 },
+    { name: "Pacamara", modifier: -0.4 },
+    { name: "Maragogipe", modifier: -0.6 },
+    { name: "Geisha", modifier: -0.2 },
+    { name: "Gesha", modifier: -0.2 },
+    { name: "Pacas", modifier: 0.2 },
+    { name: "Villa Sarchi", modifier: 0.3 },
+    { name: "Java", modifier: 0.1 },
+    { name: "Castillo", modifier: 0.0 },
+    { name: "Sidra", modifier: -0.1 },
+];
+const PROCESSES = [
+    { value: "washed", label: "Washed", modifier: 0.5 },
+    { value: "honey", label: "Honey", modifier: 0.0 },
+    { value: "natural", label: "Natural", modifier: -0.6 },
+    { value: "anaerobic-washed", label: "Anaerobic washed", modifier: 0.2 },
+    { value: "anaerobic-natural", label: "Anaerobic natural", modifier: -0.9 },
+    { value: "other", label: "Other / unlisted", modifier: 0.0 },
+];
+const ROASTS = [
+    { value: "ultra-light", label: "Ultra-light", modifier: 0.6 },
+    { value: "light", label: "Light", modifier: 0.0 },
+    { value: "light-medium", label: "Light-medium", modifier: -0.4 },
+];
+// ---------- Grind logic ----------
+const STEP_LABELS = [
+    "much finer",
+    "finer",
+    "slightly finer",
+    "your usual grind",
+    "slightly coarser",
+    "coarser",
+    "much coarser",
+];
+function findModifier(list, key, getName) {
+    if (!key)
+        return null;
+    const match = list.find((item) => getName(item).toLowerCase() === key.toLowerCase());
+    if (!match)
+        return null;
+    return { modifier: match.modifier, label: getName(match) };
+}
+function scoreToStep(score) {
+    if (score >= 1.4)
+        return 0;
+    if (score >= 0.6)
+        return 1;
+    if (score >= 0.2)
+        return 2;
+    if (score > -0.2)
+        return 3;
+    if (score > -0.6)
+        return 4;
+    if (score > -1.4)
+        return 5;
+    return 6;
+}
+function computeGrind(input) {
+    const factors = [];
+    const origin = findModifier(ORIGINS, input.origin, (o) => o.name);
+    if (origin)
+        factors.push({ label: `${origin.label} origin`, modifier: origin.modifier });
+    const variety = findModifier(VARIETIES, input.variety, (v) => v.name);
+    if (variety)
+        factors.push({ label: `${variety.label} variety`, modifier: variety.modifier });
+    const process = PROCESSES.find((p) => p.value === input.process);
+    if (process)
+        factors.push({ label: `${process.label.toLowerCase()} process`, modifier: process.modifier });
+    const roast = ROASTS.find((r) => r.value === input.roast);
+    if (roast)
+        factors.push({ label: `${roast.label.toLowerCase()} roast`, modifier: roast.modifier });
+    const score = factors.reduce((sum, f) => sum + f.modifier, 0);
+    const stepIndex = scoreToStep(score);
+    const label = STEP_LABELS[stepIndex];
+    let reason = "Fill in a few fields to see a suggestion.";
+    if (factors.length > 0) {
+        const ranked = [...factors].sort((a, b) => Math.abs(b.modifier) - Math.abs(a.modifier));
+        const top = ranked.slice(0, 2).filter((f) => Math.abs(f.modifier) > 0.05);
+        if (top.length === 0) {
+            reason = "Close to a typical density and porosity profile.";
+        }
+        else {
+            reason = top.map((f) => f.label).join(" and ") + (score >= 0 ? " push this denser." : " push this looser.");
+        }
+    }
+    return { stepIndex, label, reason };
+}
+function findNameInText(text, names) {
+    const lower = text.toLowerCase();
+    for (const name of names) {
+        if (lower.includes(name.toLowerCase()))
+            return name;
+    }
+    return null;
+}
+async function scanBagImage(file, onProgress) {
+    var _a;
+    var _b;
+    if (typeof Tesseract === "undefined") {
+        throw new Error("OCR engine did not load. Check your connection and try again.");
+    }
+    const result = await Tesseract.recognize(file, "eng", {
+        logger: (m) => {
+            if (m.status)
+                onProgress(m.status);
+        },
+    });
+    const text = (_b = (_a = result === null || result === void 0 ? void 0 : result.data) === null || _a === void 0 ? void 0 : _a.text) !== null && _b !== void 0 ? _b : "";
+    const origin = findNameInText(text, ORIGINS.map((o) => o.name));
+    const variety = findNameInText(text, VARIETIES.map((v) => v.name));
+    const processLabel = findNameInText(text, PROCESSES.filter((p) => p.value !== "other").map((p) => p.label));
+    return {
+        origin,
+        variety,
+        process: processLabel ? processLabel.toLowerCase().replace(/\s+/g, "-") : null,
+    };
+}
+// ---------- DOM wiring ----------
+function el(id) {
+    const found = document.getElementById(id);
+    if (!found)
+        throw new Error(`Missing element #${id}`);
+    return found;
+}
+function fillSelect(select, options) {
+    const blank = document.createElement("option");
+    blank.value = "";
+    blank.textContent = "Not sure";
+    select.appendChild(blank);
+    for (const opt of options) {
+        const optionEl = document.createElement("option");
+        optionEl.value = opt.value;
+        optionEl.textContent = opt.label;
+        select.appendChild(optionEl);
+    }
+}
+window.addEventListener("DOMContentLoaded", () => {
+    const originSelect = el("origin");
+    const varietySelect = el("variety");
+    const processSelect = el("process");
+    const roastSelect = el("roast");
+    const scanInput = el("scan-input");
+    const scanButton = el("scan-button");
+    const scanSpinner = el("scan-spinner");
+    const scanStatus = el("scan-status");
+    const calcButton = el("calc-button");
+    const resultSection = el("result");
+    const resultLabel = el("result-label");
+    const resultReason = el("result-reason");
+    const marker = el("gauge-marker");
+    fillSelect(originSelect, ORIGINS.map((o) => ({ value: o.name, label: o.name })));
+    fillSelect(varietySelect, VARIETIES.map((v) => ({ value: v.name, label: v.name })));
+    fillSelect(processSelect, PROCESSES.map((p) => ({ value: p.value, label: p.label })));
+    fillSelect(roastSelect, ROASTS.map((r) => ({ value: r.value, label: r.label })));
+    function currentInput() {
+        return {
+            origin: originSelect.value || null,
+            variety: varietySelect.value || null,
+            process: (processSelect.value || null),
+            roast: (roastSelect.value || null),
+        };
+    }
+    function allFieldsFilled() {
+        const input = currentInput();
+        return Boolean(input.origin && input.variety && input.process && input.roast);
+    }
+    function updateCalcButton() {
+        calcButton.disabled = !allFieldsFilled();
+    }
+    function render() {
+        const result = computeGrind(currentInput());
+        resultLabel.textContent = result.label;
+        resultReason.textContent = result.reason;
+        marker.style.left = `${(result.stepIndex / 6) * 100}%`;
+        resultSection.classList.add("visible");
+    }
+    for (const select of [originSelect, varietySelect, processSelect, roastSelect]) {
+        select.addEventListener("change", () => {
+            updateCalcButton();
+            resultSection.classList.remove("visible");
+        });
+    }
+    calcButton.addEventListener("click", () => {
+        if (!allFieldsFilled())
+            return;
+        render();
+        resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    scanInput.addEventListener("change", async () => {
+        var _a;
+        const file = (_a = scanInput.files) === null || _a === void 0 ? void 0 : _a[0];
+        if (!file)
+            return;
+        scanButton.setAttribute("aria-disabled", "true");
+        scanSpinner.classList.add("visible");
+        scanStatus.textContent = "Reading label…";
+        scanStatus.classList.add("visible");
+        try {
+            const match = await scanBagImage(file, (status) => {
+                scanStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1) + "…";
+            });
+            if (match.origin)
+                originSelect.value = match.origin;
+            if (match.variety)
+                varietySelect.value = match.variety;
+            if (match.process)
+                processSelect.value = match.process;
+            const filled = [match.origin, match.variety, match.process].filter(Boolean).length;
+            scanStatus.textContent =
+                filled > 0
+                    ? `Filled ${filled} field${filled > 1 ? "s" : ""} from the label. Check them, then set roast level and calculate.`
+                    : "Couldn't match text on the label. Fill the fields in by hand.";
+            updateCalcButton();
+        }
+        catch (err) {
+            scanStatus.textContent = err instanceof Error ? err.message : "Scan failed. Fill the fields in by hand.";
+        }
+        finally {
+            scanButton.removeAttribute("aria-disabled");
+            scanSpinner.classList.remove("visible");
+            scanInput.value = "";
+        }
+    });
+    updateCalcButton();
+});
+
+</script>
 </body>
 </html>
